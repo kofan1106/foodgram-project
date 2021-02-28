@@ -1,0 +1,22 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+{% block title %} Об авторе {% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock stylesheet %}
+
+{% block nav %}
+    {% include "includes/nav.html" %}
+{% endblock %}
+
+{% block content %}
+    <main class="main container">
+        <div class="custom-center-block">
+           <p><h3> Меня зовут Сергей, я выпускник Яндекс.Практикума 
+           по специальности Pyhton-разработчик. Со мной можно связаться через:</h3>
+           <p><h4><a href='mailto:kofan1106@yandex.ru'>Почту: kofan1106@yandex.ru</h4></a></p>
+           <p><h4><a href='https://github.com/kofan1106'>Мой профиль на Github</a></h4></p>
+    </main>
+
+{% endblock %}
