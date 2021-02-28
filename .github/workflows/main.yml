@@ -15,9 +15,9 @@ jobs:
        key: ${{ secrets.SSH_KEY }}
        passphrase: ${{ secrets.PASSPHRASE }} 
        script: |
-         sudo docker pull caterinaplevako/foodgram:latest
+         sudo docker pull kofan1106/foodgram:latest
          sudo docker-compose stop $(sudo docker ps -a -q)
-         sudo docker-compose run --rm -d -p 5000:5000 caterinaplevako/foodgram:latest
+         sudo docker-compose run --rm -d -p 5000:5000 kofan1106/foodgram:latest
  
       
   build_and_push_to_docker_hub:
@@ -37,4 +37,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: caterinaplevako/foodgram:latest
+          tags: kofan1106/foodgram:latest
