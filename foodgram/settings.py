@@ -4,8 +4,6 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'slg4kr7z&o8a6&d@@wrww!whsb+o*q#3&98i8!($^ewfo9%79t'
-
 DEBUG = True
 
 ALLOWED_HOSTS = [
@@ -64,14 +62,12 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        # 'ENGINE': os.environ.get('DB_ENGINE'),
-        # 'NAME': os.environ.get('DB_NAME'),
-        # 'USER': os.environ.get('POSTGRES_USER'),
-        # 'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        # 'HOST': os.environ.get('DB_HOST'),
-        # 'PORT': os.environ.get('DB_PORT'),
+        'ENGINE': os.environ.get('DB_ENGINE'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
