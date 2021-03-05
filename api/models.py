@@ -13,6 +13,10 @@ class FavoriteRecipe(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='favourites')
 
+    class Meta:
+        constraints = [models.UniqueConstraint( 
+            fields= ['user', 'recipe'], name='favorite_unique')]
+
 
 class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,

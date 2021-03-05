@@ -67,9 +67,8 @@ def recipe_edit(request, recipe_id, username):
                             recipe_id=recipe.id)
 
         return render(request, 'recipes/formRecipe.html', context)
-    else:
-        return redirect('recipe', username=request.user.username,
-                        recipe_id=recipe.id)
+    return redirect('recipe', username=request.user.username,
+                     recipe_id=recipe.id)
 
 
 @login_required
