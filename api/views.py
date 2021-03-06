@@ -60,11 +60,12 @@ class Purchases(LoginRequiredMixin, View):
         return JsonResponse({'success': False})
 
     def delete(self, request, recipe_id):
+        success_result = False
         recipe = get_object_or_404(Recipe, id=recipe_id)
         purchase = Purchase.purchase.get(user=request.user)
         if not purchase.recipes.remove(recipe):
-            return JsonResponse({'success': True})
-        return JsonResponse({'success': False})
+            success_result = True
+        return JsonResponse({'success': success_result})
 
 
 def get_ingredients(request):

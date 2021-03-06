@@ -2,24 +2,7 @@ name: foodgram_workflow
 
 on: [push]
 
-jobs:       
-  deploy:
-   runs-on: ubuntu-latest
-   needs: build_and_push_to_docker_hub
-   steps:
-   - name: executing remote ssh commands to deploy
-     uses: appleboy/ssh-action@master
-     with:
-       host: ${{ secrets.HOST }}
-       username: ${{ secrets.USER }}
-       key: ${{ secrets.SSH_KEY }}
-       passphrase: ${{ secrets.PASSPHRASE }} 
-       script: |
-         sudo docker pull kofan1106/foodgram:latest
-         sudo docker-compose stop $(sudo docker ps -a -q)
-         sudo docker-compose run --rm -d -p 5000:5000 kofan1106/foodgram:latest
- 
-      
+jobs:         
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
@@ -38,3 +21,44 @@ jobs:
         with:
           push: true
           tags: kofan1106/foodgram:latest
+
+  deploy:
+   runs-on: ubuntu-latest
+   needs: build_and_push_to_docker_hub
+   steps:
+   - name: Check out the repo
+     uses: actions/checkout@v2
+   - name: Copy file via ssh password
+     uses: appleboy/scp-action@master
+     with:
+       host: ${{ secrets.HOST }}
+       username: ${{ secrets.USER }}
+       key: ${{ secrets.SSH_KEY }}
+       passphrase: ${{ secrets.PASSPHRASE }}
+       port: 22
+       source: 'docker-compose.yaml, nginx/nginx.conf, .env'
+       target: '/home/${{ secrets.USER }}'
+   - name: executing remote ssh commands to deploy
+     uses: appleboy/ssh-action@master
+     with:
+       host: ${{ secrets.HOST }}
+       username: ${{ secrets.USER }}
+       key: ${{ secrets.SSH_KEY }}
+       passphrase: ${{ secrets.PASSPHRASE }}
+       script: |
+         sudo docker pull kofan1106/foodgram:latest
+         sudo docker-compose up -d
+         sudo docker image prune -f
+         sudo docker-compose run web python manage.py makemigrations
+         sudo docker-compose run web python manage.py migrate
+
+  send_message:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: send message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: ${{ github.workflow }} успешно выполнен!

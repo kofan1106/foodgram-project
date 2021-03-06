@@ -18,10 +18,15 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField(
-        Ingredient, through='IngredientForRecipe', blank=False, related_name='recipes')
+        Ingredient, through='IngredientForRecipe',
+        blank=False, related_name='recipes'
+         )
     description = models.TextField(blank=False)
     pub_date = models.DateTimeField('date published', auto_now_add=True)
-    cooking_time = models.PositiveIntegerField(blank=False)
+    cooking_time = models.PositiveIntegerField(
+        blank=False,
+        validators=[MinValueValidator(0)]
+         )
     slug = models.SlugField(max_length=50, blank=True)
     image = models.ImageField(upload_to='recipes/', null=True, blank=False)
     tags = TaggableManager()
@@ -41,8 +46,8 @@ class IngredientForRecipe(models.Model):
     amount = models.PositiveIntegerField(default=1, max_length=20)
 
     class Meta:
-        constraints = [models.UniqueConstraint( 
-            fields= ['ingredient', 'recipe', 'amount'], name='favorite_unique')]
+        constraints = [models.UniqueConstraint(
+            fields=['ingredient', 'recipe', 'amount'], name='favorite_unique')]
 
     def __str__(self):
         return str(self.ingredient) if self.ingredient else ''
