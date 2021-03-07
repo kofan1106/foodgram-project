@@ -14,7 +14,7 @@ services:
     env_file:
       - ./.env
   web:
-    image: kofan1106/foodgram:v1
+    image: kofan1106/foodgram:latest
     container_name: foodgram
     restart: always
     volumes:
