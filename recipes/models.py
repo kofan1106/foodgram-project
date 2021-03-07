@@ -44,11 +44,11 @@ class IngredientForRecipe(models.Model):
         Recipe, on_delete=models.CASCADE, related_name='recipeingredient')
     ingredient = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE, related_name='recipeingredient')
-    amount = models.PositiveIntegerField(default=1, max_length=20)
+    amount = models.PositiveIntegerField(default=1)
 
     class Meta:
         constraints = [models.UniqueConstraint(
-            fields=['ingredient', 'recipe', 'amount'], name='favorite_unique')]
+            fields=['ingredient', 'recipe', 'amount'], name='favorites_uniques')]
 
     def __str__(self):
         return str(self.ingredient) if self.ingredient else ''
