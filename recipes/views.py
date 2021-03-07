@@ -171,3 +171,4 @@ def download_shoplist(request):
     response = HttpResponse(content, content_type='text/plain')
     response['Content-Disposition'] = f'attachment; filename={filename}'
     return response
+    
