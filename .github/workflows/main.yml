@@ -29,7 +29,6 @@ jobs:
    - name: Check out the repo
      uses: actions/checkout@v2
    - name: Copy file via ssh password
-     if: steps.extract_branch.outputs.branch == 'master'
      uses: appleboy/scp-action@master
      with:
        host: ${{ secrets.HOST }}
