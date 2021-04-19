@@ -20,13 +20,14 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField(
         Ingredient, through='IngredientForRecipe',
-        blank=False, related_name='recipes'
+        blank=False, related_name='recipes',
+        validators=[MinValueValidator(1)]
          )
     description = models.TextField(blank=False)
     pub_date = models.DateTimeField('date published', auto_now_add=True)
     cooking_time = models.PositiveIntegerField(
         blank=False,
-        validators=[MinValueValidator(0)]
+        validators=[MinValueValidator(1)]
          )
     slug = models.SlugField(max_length=50, blank=True)
     image = models.ImageField(upload_to='recipes/', null=True, blank=False)
