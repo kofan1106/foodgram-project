@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+
 
 SECRET_KEY = 'slg4kr7z&o8a6&d@@wrww!whsb+o*q#3&98i8!($^ewfo9%79t'
 
@@ -44,10 +44,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foodgram.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -110,16 +112,19 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'index'
-LOGOUT_REDIRECT_URL = 'index'
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
-ITEMS_FOR_PAGINATOR = 6
+SITE_ID = 2
 
-SITE_ID = 1
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 PAGINATION_PAGE_SIZE = 6
 
