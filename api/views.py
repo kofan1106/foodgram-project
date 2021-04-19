@@ -1,78 +1,77 @@
-import json
-from urllib.parse import unquote
-
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
+from rest_framework.utils import json
 
-from recipes.models import Ingredient, Recipe, User
+from recipes.models import (FollowRecipe, FollowUser, Recipe,
+                            ShoppingList)
+from recipes.models import Ingredients as IngredientsModel
 
-from .models import FavoriteRecipe, Purchase, Subscription
+SUCCESS_RESPONSE = JsonResponse({'success': True})
+BAD_RESPONSE = JsonResponse(
+        {'success': False}, status=400
+    )
+
+class Ingredient(LoginRequiredMixin, View):
+    def get(self, request):
+        text = request.GET['query']
+        ingredients = list(IngredientsModel.objects.filter(
+            title__istartswith=text).values('title', 'dimension'))
+        return JsonResponse(ingredients, safe=False)
 
 
 class Favorites(LoginRequiredMixin, View):
     def post(self, request):
-        recipe_id = json.loads(request.body).get('id')
-        created = False
-        if recipe_id is not None:
-            obj, created = FavoriteRecipe.objects.get_or_create(
-                recipe_id=recipe_id, user=request.user)
-        return JsonResponse({'success': created})
+        req = json.loads(request.body)
+        recipe_id = req.get('id', None)
+        if recipe_id:
+            recipe = get_object_or_404(Recipe, id=recipe_id)
+            obj, created = FollowRecipe.objects.get_or_create(
+                user=request.user, recipe=recipe
+            )
+            if created:
+                return SUCCESS_RESPONSE
+            return JsonResponse({'success': False})
+        return BAD_RESPONSE
 
     def delete(self, request, recipe_id):
-        recipe = get_object_or_404(
-            FavoriteRecipe, recipe=recipe_id, user=request.user)
-        recipe.delete()
-        return JsonResponse({'success': True})
+        deleted_favourite = FollowRecipe.objects.filter(
+            recipe=recipe_id, user=request.user
+        ).delete()
+        return SUCCESS_RESPONSE
 
 
-class Subscriptions(LoginRequiredMixin, View):
+class Subscribe(LoginRequiredMixin, View):
     def post(self, request):
-        author_id = json.loads(request.body).get('id')
-        author = get_object_or_404(User, pk=author_id)
-        created = False
-        if author != request.user:
-            obj, created = Subscription.objects.get_or_create(
-                author=author, user=request.user)
-        return JsonResponse({'success': created})
+        req = json.loads(request.body)
+        author_id = req.get('id', None)
+        if author_id is not None:
+            author = get_object_or_404(User, id=author_id)
+            FollowUser.objects.get_or_create(
+                user=self.request.user, author=author
+            )
+            return SUCCESS_RESPONSE
+        else:
+            return BAD_RESPONSE
 
     def delete(self, request, author_id):
-        success_result = False
-        author = get_object_or_404(User, pk=author_id)
-        if author != request.user:
-            subscription = get_object_or_404(
-                Subscription, author=author_id, user=request.user)
-            subscription.delete()
-            success_result = True
-        return JsonResponse({'success': success_result})
+        deleted_subscription = FollowUser.objects.filter(
+            user__username=request.user.username,
+            author__id=author_id).delete()
+        return SUCCESS_RESPONSE
 
 
-class Purchases(LoginRequiredMixin, View):
+class Purchase(LoginRequiredMixin, View):
     def post(self, request):
-        success_result = False
-        recipe_id = json.loads(request.body).get('id')
+        recipe_id = json.loads(request.body)['id']
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        purchase = Purchase.purchase.get_or_create_purchase(
-            user=request.user)
-
-        if not purchase.recipes.filter(id=recipe_id).exists():
-            purchase.recipes.add(recipe)
-            success_result = True
-        return JsonResponse({'success': success_result})
+        ShoppingList.objects.get_or_create(user=request.user, recipe=recipe)
+        return SUCCESS_RESPONSE
 
     def delete(self, request, recipe_id):
-        success_result = False
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        purchase = Purchase.purchase.get(user=request.user)
-
-        if not purchase.recipes.remove(recipe):
-            success_result = True
-        return JsonResponse({'success': success_result})
-
-
-def get_ingredients(request):
-    query = unquote(request.GET.get('query'))
-    data = list(Ingredient.objects.filter(
-        name__icontains=query).values('name', 'unit'))
-    return JsonResponse(data, safe=False)
+        deleted_purchase = ShoppingList.objects.filter(
+            user__username=request.user.username,
+            recipe__id=recipe_id).delete()
+        return SUCCESS_RESPONSE

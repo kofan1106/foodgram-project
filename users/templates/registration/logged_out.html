@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% load user_filters %}
+{% block title %}Вы вышли{% endblock %}
+{% block static %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock %}
+    
+{% load user_filters %}
+{% load templates_filters%}
+
+{% block content %}
+
+{% include 'includes/nav.html' with logout=True %}
+<main class="main container">
+
+    <div class="custom-center-block">
+        <h1 class="main__title">Не авторизован</h1>
+    </div>
+    <a href="{% url 'index' %}"> <button  class="button button_style_blue" >Перейти на главную</button> </a>
+
+</main>
+{% include 'includes/footer.html' %}
+
+{% endblock  %}

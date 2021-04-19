@@ -15,18 +15,18 @@ ALLOWED_HOSTS = [
 
 
 INSTALLED_APPS = [
+    'recipes',
+    'users',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'django.contrib.flatpages',
     'sorl.thumbnail',
-    'taggit',
-    'recipes',
-    'users',
+    'rest_framework',
     'api',
     'about',
 ]
@@ -119,3 +119,7 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 ITEMS_FOR_PAGINATOR = 6
 
 SITE_ID = 1
+
+PAGINATION_PAGE_SIZE = 6
+
+PAGINATION_PAGE_SIZE_FOR_FOLLOW = 3
