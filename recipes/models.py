@@ -88,7 +88,7 @@ class IngredientRecipe(models.Model):
         on_delete=models.CASCADE,
         related_name='ingredient'
         )
-    amount = models.PositiveIntegerField(null=True, validators=[MinValueValidator(1)],
+    amount = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1)],
                                          blank=False
                                         )
 

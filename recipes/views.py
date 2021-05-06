@@ -127,7 +127,7 @@ def recipe_view(request, recipe_id, username):
 def new_recipe(request):
     user = User.objects.get(username=request.user)
     form = RecipeForm(request.POST or None, files=request.FILES or None)
-    if request.method == 'POST' and form.is_valid():
+    if form.is_valid():
         ingr = get_ingredients(request)
         recipe = form.save(commit=False)
         recipe.author = user
@@ -144,8 +144,6 @@ def new_recipe(request):
                 return redirect('index')
         form.save_m2m()
         return redirect('index')
-    else:
-        form = RecipeForm()
     return render(request, 'form_recipe.html', {'form': form})
 
 
