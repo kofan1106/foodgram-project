@@ -1,15 +1,25 @@
-{% extends "base.html" %} 
-{% block title %} Ошибка 500 {% endblock %}
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}HTTP 500{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock %}
+
 {% block content %}
+  <div class="custom-center-block">
+    <p class="custom-text-block">HTTP 500: Internal Server Error</p>
 
-<main role="main" class="container">
-<div class="row">
-    <div class="col-md-12">
-        <h1>Ошибка 500</h1>
+    <div style="text-align: center;">
         <p class="lead">Ошибка на сервере, попробуйте обновить страницу или обратиться позже</p>
-        <p class="lead"><a href="{% url 'index' %}">Вернуться на главную</a></p>
     </div>
-</div>
-</main>
 
+    <div style="display: flex; justify-content: center;">
+        <div class="custom-button-block">
+            <a class="button button_style_blue" href="{% url 'index' %}">Вернуться на главную</a>
+        </div>
+    </div>
+
+  </div>
 {% endblock %}

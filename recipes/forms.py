@@ -48,7 +48,7 @@ class RecipeForm(forms.ModelForm):
     def clean(self):
         ingridients = self.clean_ingridient()
 
-        if len(ingridients) == 0:
+        if len(ingridients) <= 0:
             raise ValidationError(
                 'Пожалуйста добавьте хотя бы один ингредиент',
             )

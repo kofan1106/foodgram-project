@@ -11,6 +11,18 @@ from .models import (FollowUser, IngredientRecipe, Ingredients,
                      Recipe, ShoppingList, Tag, User)
 
 
+def page_bad_request(request, exception):
+    return render(request, 'misc/400.html', status=400)
+
+
+def page_not_found(request, exception):
+    return render(request, 'misc/404.html', status=404)
+
+
+def server_error(request):
+    return render(request, 'misc/500.html', status=500)
+
+
 TAGS = ['breakfast', 'lunch', 'dinner']
 
 
@@ -257,6 +269,10 @@ def download_card(request):
         ('-total_amount')
     )
     file_data = ''
+
+    if not ingredients:
+        return render(request, 'misc/400.html', status=400)
+
     for item in ingredients:
         line = ' '.join(str(value) for value in item.values())
         file_data += line + '\n'
@@ -266,11 +282,3 @@ def download_card(request):
     )
     response['Content_Disposition'] = 'attachment; filename="ShoppingList.txt"'
     return response
-
-
-def page_not_found(request, exception):
-    return render(request, 'misc/404.html', {'path': request.path}, status=404)
-
-
-def server_error(request):
-    return render(request, 'misc/500.html', status=500)
