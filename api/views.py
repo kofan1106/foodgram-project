@@ -26,15 +26,14 @@ class Favorites(LoginRequiredMixin, View):
     def post(self, request):
         req = json.loads(request.body)
         recipe_id = req.get('id', None)
-        if recipe_id:
-            recipe = get_object_or_404(Recipe, id=recipe_id)
-            obj, created = FollowRecipe.objects.get_or_create(
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        obj, created = FollowRecipe.objects.get_or_create(
                 user=request.user, recipe=recipe
             )
-            if created:
-                return SUCCESS_RESPONSE
-            return JsonResponse({'success': False})
-        return BAD_RESPONSE
+        if created:
+            return SUCCESS_RESPONSE
+        return JsonResponse({'success': False})
+
 
     def delete(self, request, recipe_id):
         deleted_favourite = FollowRecipe.objects.filter(
@@ -53,11 +52,10 @@ class Subscribe(LoginRequiredMixin, View):
                 user=self.request.user, author=author
             )
             return SUCCESS_RESPONSE
-        else:
-            return BAD_RESPONSE
+        return BAD_RESPONSE
 
     def delete(self, request, author_id):
-        deleted_subscription = FollowUser.objects.filter(
+        FollowUser.objects.filter(
             user__username=request.user.username,
             author__id=author_id).delete()
         return SUCCESS_RESPONSE

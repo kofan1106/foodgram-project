@@ -88,9 +88,16 @@ class IngredientRecipe(models.Model):
         on_delete=models.CASCADE,
         related_name='ingredient'
         )
-    amount = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1)],
-                                         blank=False
-                                        )
+    amount = models.PositiveIntegerField(null=False,
+    validators=[MinValueValidator(1)],
+     blank=False)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+            fields=['ingredient', 'recipe', 'amount'],
+            name='favorites_uniques'
+        )]
 
     def __str__(self):
         return str(self.amount)
@@ -108,7 +115,7 @@ class FollowRecipe(models.Model):
 
     def __str__(self):
         return f'follower - {self.user} following recipe - {self.recipe}'
-  
+
     class Meta:
         verbose_name = 'Любимый рецепт'
         verbose_name_plural = 'Любимые рецепты'

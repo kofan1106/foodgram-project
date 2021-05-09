@@ -212,7 +212,6 @@ def follow_index(request):
 def favorite_index(request):
     tags = request.GET.getlist('tag', TAGS)
     all_tags = Tag.objects.all()
-    print(tags)
     if tags == ['breakfast', 'lunch', 'dinner']:
         recipes = Recipe.objects.filter(
             following_recipe__user=request.user,
