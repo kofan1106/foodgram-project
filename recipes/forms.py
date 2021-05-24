@@ -22,6 +22,7 @@ class RecipeForm(forms.ModelForm):
         }
     
     def clean_ingridient(self):
+        super().clean()
         new_ingridients_list = {}
         for key, title in self.data.items():
             if 'nameIngredient_' in key:
@@ -31,6 +32,10 @@ class RecipeForm(forms.ModelForm):
 
         ing_titles = self.data.getlist("nameIngredient")
         ing_amount = self.data.getlist("valueIngredient")
+
+        for title, amount in new_ingridients_list.items():
+            ing_titles.append(title)
+            ing_amount.append(amount)
 
 
         clean_items = {}

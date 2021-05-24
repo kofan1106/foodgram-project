@@ -141,7 +141,7 @@ def new_recipe(request):
             )
             ingr_recipe.save()
             if ingr_recipe.amount == 0:
-                return redirect('index')
+                return redirect('form_recipe.html')
         form.save_m2m()
         return redirect('index')
     return render(request, 'form_recipe.html', {'form': form})
@@ -268,7 +268,7 @@ def download_card(request):
     file_data = ''
 
     if not ingredients:
-        return render(request, 'misc/400.html', status=400)
+        return render(request, 'misc/404.html', status=404)
 
     for item in ingredients:
         line = ' '.join(str(value) for value in item.values())
