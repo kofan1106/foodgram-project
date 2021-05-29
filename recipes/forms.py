@@ -44,7 +44,7 @@ class RecipeForm(forms.ModelForm):
             clean_items[ingridient] = ing_amount[number]
         self.cleaned_data['items'] = clean_items
         return self.cleaned_data['items']
-    
+
 
     def clean(self):
         ingridients = self.clean_ingridient()

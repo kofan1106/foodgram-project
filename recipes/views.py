@@ -127,6 +127,11 @@ def recipe_view(request, recipe_id, username):
 def new_recipe(request):
     user = User.objects.get(username=request.user)
     form = RecipeForm(request.POST or None, files=request.FILES or None)
+    if request.POST:
+        for key, value in request.POST.items():
+            if 'valueIngredient' in key and int(value) <= 0:
+                form.add_error(None,
+                    "Количество ингредиента должно быть больше 0.")
     if form.is_valid():
         ingr = get_ingredients(request)
         recipe = form.save(commit=False)
@@ -140,8 +145,6 @@ def new_recipe(request):
                 amount=amount,
             )
             ingr_recipe.save()
-            if ingr_recipe.amount == 0:
-                return redirect('form_recipe.html')
         form.save_m2m()
         return redirect('index')
     return render(request, 'form_recipe.html', {'form': form})
@@ -153,14 +156,14 @@ def recipe_edit(request, username, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id, author__username=username)
     ingreidents = IngredientRecipe.objects.filter(recipe=recipe)
     if request.user != recipe.author:
-        return redirect(reverse('recipe', args=(username ,recipe_id)))
+        return redirect(reverse('recipe', args=(username, recipe_id)))
     form = RecipeForm(
         request.POST or None, files=request.FILES or None, instance=recipe)
     if not form.is_valid():
         return render(
-            request, 
+            request,
             "recipe_edit.html",
-            {"recipe": recipe, 
+            {"recipe": recipe,
             "form": form,
             "ingreidents": ingreidents}
         )  
@@ -268,7 +271,7 @@ def download_card(request):
     file_data = ''
 
     if not ingredients:
-        return render(request, 'misc/404.html', status=404)
+        return redirect('shopping-list')
 
     for item in ingredients:
         line = ' '.join(str(value) for value in item.values())

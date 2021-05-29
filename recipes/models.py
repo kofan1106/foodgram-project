@@ -88,9 +88,12 @@ class IngredientRecipe(models.Model):
         on_delete=models.CASCADE,
         related_name='ingredient'
         )
-    amount = models.PositiveIntegerField(null=False,
-    validators=[MinValueValidator(1)],
-     blank=False)
+    amount = models.DecimalField(
+        max_digits=6,
+        decimal_places=1,
+        validators=[MinValueValidator(1)]
+        )
+
 
     class Meta:
         constraints = [

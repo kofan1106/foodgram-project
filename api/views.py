@@ -14,6 +14,7 @@ BAD_RESPONSE = JsonResponse(
         {'success': False}, status=400
     )
 
+
 class Ingredient(LoginRequiredMixin, View):
     def get(self, request):
         text = request.GET['query']
@@ -34,9 +35,8 @@ class Favorites(LoginRequiredMixin, View):
             return SUCCESS_RESPONSE
         return JsonResponse({'success': False})
 
-
     def delete(self, request, recipe_id):
-        deleted_favourite = FollowRecipe.objects.filter(
+        FollowRecipe.objects.filter(
             recipe=recipe_id, user=request.user
         ).delete()
         return SUCCESS_RESPONSE
@@ -69,7 +69,7 @@ class Purchase(LoginRequiredMixin, View):
         return SUCCESS_RESPONSE
 
     def delete(self, request, recipe_id):
-        deleted_purchase = ShoppingList.objects.filter(
+        ShoppingList.objects.filter(
             user__username=request.user.username,
             recipe__id=recipe_id).delete()
         return SUCCESS_RESPONSE

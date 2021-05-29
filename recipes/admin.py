@@ -32,6 +32,7 @@ admin.site.register(Recipe, RecipesAdmin)
 
 
 class IngredientsAdmin(admin.ModelAdmin):
+    min_num = 1
     list_display = ('title', 'dimension')
     list_filter = ('title',)
     search_fields = ('title',)
